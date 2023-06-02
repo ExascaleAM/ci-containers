@@ -1,0 +1,17 @@
+ARG TAG=latest
+FROM ubuntu:${TAG}
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+       git g++ clang llvm vim emacs wget sudo curl cmake make ninja-build clang-format zstd libhwloc-dev libomp-dev gnupg2 \
+       libgtest-dev libopenmpi-dev openfoam10 && \
+    apt-get purge --autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -G sudo -u 1001 exaam
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+USER exaam
+ENV CCACHE_MAXSIZE=250M
+WORKDIR /home/exaam
